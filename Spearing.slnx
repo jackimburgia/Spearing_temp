@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/Data/">
+    <Project Path="SpearingFrames/SpearingFrames.csproj" />
+  </Folder>
+  <Folder Name="/Entities/">
+    <Project Path="ComplianceEntities/ComplianceEntities.csproj" Id="b7e58d1b-0ee2-4882-8c2d-04a44a030152" />
+  </Folder>
+  <Folder Name="/Language/">
+    <Project Path="SqlConverter/SqlConverter.csproj" />
+  </Folder>
+  <Folder Name="/Utilities/" />
+  <Folder Name="/Utilities/Data/">
+    <Project Path="DapperUtilities/DapperUtilities.csproj" Id="48130f89-75af-48e6-86cb-9e06c4128807" />
+    <Project Path="SqlClientUtilities/SqlClientUtilities.csproj" Id="6cb1450b-e55d-4f2c-b9ac-8e9dbc90f313" />
+  </Folder>
+  <Folder Name="/Utilities/Entities/">
+    <Project Path="EntitiesUtilities/EntitiesUtilities.csproj" Id="ea975d08-3be3-4705-8d87-ad442e5580b3" />
+  </Folder>
+  <Folder Name="/_Testing/">
+    <Project Path="BridgeTester1/BridgeTester1.csproj" />
+    <Project Path="DataTester/DataTester.csproj" Id="fe4e81fa-ce06-4f89-8342-71a6412af102" />
+  </Folder>
+</Solution>
