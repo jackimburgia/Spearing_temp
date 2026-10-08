@@ -1,10 +1,14 @@
 ﻿using Microsoft.Data.SqlClient;
+using Spearing.Utilities.Entities.EntitiesUtilities;
+//using Spearing.Utilities.Security.SecurityUtilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Spearing.Utilities.Data.SqlClientUtilities
 {
+
+
 
     public static class ParameterUtilities
     {
@@ -82,6 +86,11 @@ namespace Spearing.Utilities.Data.SqlClientUtilities
         public static SqlParameter DateTime2Param(string name)
         {
             SqlParameter param = new SqlParameter(name, System.Data.SqlDbType.DateTime2);
+            return param;
+        }
+        public static SqlParameter DateTimeParam(string name)
+        {
+            SqlParameter param = new SqlParameter(name, System.Data.SqlDbType.DateTime);
             return param;
         }
 

@@ -1,10 +1,14 @@
-﻿using Microsoft.Data.SqlClient;
-using static Spearing.Utilities.Data.SqlClientUtilities.SqlConnectionExtensions;
-using static Spearing.Utilities.Data.SqlClientUtilities.ParameterUtilities;
-using Spearing.Utilities.Data.SqlClientUtilities;
-using Microsoft.Data.SqlClient; // or System.Data.SqlClient
-using Dapper;
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Spearing.Data.ComplianceData;
+using Spearing.Data.IComplianceData;
 using Spearing.Utilities.Data.DapperUtilities;
+using Spearing.Utilities.Data.IDataUtilities;
+using Spearing.Utilities.Data.SqlClientUtilities;
+using static Spearing.Utilities.Data.SqlClientUtilities.ParameterUtilities;
+using static Spearing.Utilities.Data.SqlClientUtilities.SqlConnectionExtensions;
 
 namespace DataTester
 {
@@ -33,11 +37,49 @@ namespace DataTester
 
 
             var res2 = await new CommandDefinitionBuilder(conn)
-                .QueryAsync((db, cmd) => db.QueryAsync<Asset>(cmd));
+                .Query((db, cmd) => db.QueryAsync<Asset>(cmd));
+        }
+
+        protected IModelDefinitionData modelDefinitionData;
+
+        public Program(IConfiguration configuration, IModelDefinitionData modelDefinitionData)
+        {
+            this.modelDefinitionData = modelDefinitionData;
+
+            var connStr = configuration.GetConnectionString("Compliance");
+            Console.WriteLine($"Connection: {connStr}");
+        }
+
+        public void Run()
+        {
+            var data = this.modelDefinitionData.GetModelDefinition(1);  
+            this.modelDefinitionData.UpdateModelDefinition(data);
         }
 
         static void Main(string[] args)
         {
+
+
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<IConfiguration>(configuration)
+                .AddTransient<Program>()
+                .AddTransient<IDbConnectionFactory, SqlServerConnectionFactory>()
+                .AddTransient<IModelDefinitionData, ModelDefinitionData>()
+                //.AddDependencies()
+                .BuildServiceProvider();
+
+            var program = serviceProvider.GetService<Program>();
+
+            program.Run();
+
+
+            return;
+
             string connStr = @"Server=localhost\SQLEXPRESS;Database=tester;Trusted_Connection=True;TrustServerCertificate=True;";
 
             // SQLClient extensions

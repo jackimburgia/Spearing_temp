@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/Data/">
+    <Project Path="ComplianceData/ComplianceData.csproj" Id="c31b5d14-1476-4eb0-90d1-c3e6a795dcde" />
+    <Project Path="IComplianceData/IComplianceData.csproj" Id="b1a2d4be-f63c-4f45-ab64-d79688e86300" />
     <Project Path="SpearingFrames/SpearingFrames.csproj" />
   </Folder>
   <Folder Name="/Entities/">
@@ -11,10 +13,14 @@
   <Folder Name="/Utilities/" />
   <Folder Name="/Utilities/Data/">
     <Project Path="DapperUtilities/DapperUtilities.csproj" Id="48130f89-75af-48e6-86cb-9e06c4128807" />
+    <Project Path="IDataUtilities/IDataUtilities.csproj" Id="337a3724-6aff-4862-a3ba-f9ab005893c2" />
     <Project Path="SqlClientUtilities/SqlClientUtilities.csproj" Id="6cb1450b-e55d-4f2c-b9ac-8e9dbc90f313" />
   </Folder>
   <Folder Name="/Utilities/Entities/">
     <Project Path="EntitiesUtilities/EntitiesUtilities.csproj" Id="ea975d08-3be3-4705-8d87-ad442e5580b3" />
+  </Folder>
+  <Folder Name="/Utilities/Security/">
+    <Project Path="SecurityUtilities/SecurityUtilities.csproj" Id="6785d5fa-114b-42a7-b82e-362196df739c" />
   </Folder>
   <Folder Name="/_Testing/">
     <Project Path="BridgeTester1/BridgeTester1.csproj" />

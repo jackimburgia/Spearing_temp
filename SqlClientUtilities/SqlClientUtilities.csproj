@@ -9,6 +9,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EntitiesUtilities\EntitiesUtilities.csproj" />
+    <ProjectReference Include="..\IDataUtilities\IDataUtilities.csproj" />
   </ItemGroup>
 
 </Project>

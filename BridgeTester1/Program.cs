@@ -155,28 +155,35 @@ namespace BridgeTester1
                 }
             };
 
+            Console.WriteLine($"DATASETS");
+            Console.WriteLine("------------------------------------------------------------------------------------");
+            Console.WriteLine();
 
-            foreach(var ds in complianceModel.Database)
+            foreach (var ds in complianceModel.Database)
             {
                 ds.Value.Print();
-                Console.WriteLine("------------------------------------------------------------------------------------");
+                //Console.WriteLine("------------------------------------------------------------------------------------");
                 Console.WriteLine();
             }
 
+            Console.WriteLine();
+            Console.WriteLine("SPREADSHEET BUILD OUT");
+            Console.WriteLine("------------------------------------------------------------------------------------");
 
-            foreach(var build in spreadsheetBuilds)
+
+            foreach (var spreadsheetBuild in spreadsheetBuilds)
             {
-                if (build.BuildType == SpreadsheetBuildTypes.Dataset)
+                if (spreadsheetBuild.BuildType == SpreadsheetBuildTypes.Dataset)
                 {
-                    var dataset = complianceModel.Database[build.DatasetName];
+                    var dataset = complianceModel.Database[spreadsheetBuild.DatasetName];
 
-                    Console.WriteLine($"{build.SheetName}!{build.CellReference} = DATASET -> {build.DatasetName}");
+                    Console.WriteLine($"{spreadsheetBuild.SheetName}!{spreadsheetBuild.CellReference} = DATASET -> {spreadsheetBuild.DatasetName}");
                     foreach(var column in dataset.ColumnNames)
                     {
                         // check if column is a "formula"
-                        if (complianceModel.References.ContainsKey((build.DatasetName, column)))
+                        if (complianceModel.References.ContainsKey((spreadsheetBuild.DatasetName, column)))
                         {
-                            var modelBuild = complianceModel.References[(build.DatasetName, column)];
+                            var modelBuild = complianceModel.References[(spreadsheetBuild.DatasetName, column)];
                             Console.WriteLine($"    {column} = FORMULA -> {modelBuild.Build.BuildText}");
                         }
                         else
@@ -186,24 +193,74 @@ namespace BridgeTester1
 
                     }
                 }
-                else if (build.BuildType == SpreadsheetBuildTypes.SingleCell)
+                else if (spreadsheetBuild.BuildType == SpreadsheetBuildTypes.SingleCell)
                 {
                     // check if column is a "formula"
 
-                    if (complianceModel.References.ContainsKey((build.DatasetName, build.PropertyName)))
+                    if (complianceModel.References.ContainsKey((spreadsheetBuild.DatasetName, spreadsheetBuild.PropertyName)))
                     {
+                        //var reference = complianceModel.References[(spreadsheetBuild.DatasetName, spreadsheetBuild.PropertyName)];
                         // formula - convert to Excel formula
-                        var modelBuild = complianceModel.References[(build.DatasetName, build.PropertyName)];
-                        Console.WriteLine($"{build.SheetName}!{build.CellReference} = FORMULA -> {modelBuild.Build.BuildText}");
+                        var buildResult = complianceModel.References[(spreadsheetBuild.DatasetName, spreadsheetBuild.PropertyName)];
+                        Console.WriteLine($"{spreadsheetBuild.SheetName}!{spreadsheetBuild.CellReference} = FORMULA -> {buildResult.Build.BuildText}");
+
+                        if (buildResult.SqlQueryStatement != null && buildResult.SqlQueryStatement.Select.Projections.Count == 1)
+                        {
+                            var projection = buildResult.SqlQueryStatement.Select.Projections[0];
+                            Console.WriteLine(projection.Expression.GetType());
+
+                            if (projection.Expression is AggregateExpr agg)
+                            {
+                                // Sum, Max, Min, Avg, Count
+                                Console.WriteLine(agg.Func);
+
+                                bool hasWhere = buildResult.WhereStatement != null;
+                                Console.WriteLine($"Has Where = {hasWhere}");
+
+                                if (hasWhere)
+                                {
+                                    // the only support AND conditions
+                                    // SUMIF or SUMIFS
+                                    // MAXIFS
+                                    // MINIFS
+                                    // AVERAGEIF or AVERAGEIFS
+                                    // COUNTIF or COUNTIFS
+
+                                    // use SUMPRODUCT for OR conditions
+
+                                    Console.WriteLine($"AGGREGATE with WHERE");
+                                }
+                                else
+                                {
+                                    //=SUM(H2:H4)
+                                    //=MAX(H2:H4)
+                                    //=MIN(H2:H4)
+                                    //=AVERAGE(H2:H4)
+                                    //=COUNT(H2:H4)
+
+                                    // get the range for table
+                                    Console.WriteLine($"Table = {buildResult.SqlQueryStatement.From}");
+                                    //var ds = complianceModel.
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("UNDEFINED EXPRESSION!!!");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("UNDEFINED!!!");
+                        }
                     }
                     else
                     {
                         // not a formula; use value direcly from the frame
-                        var fr = complianceModel.Database[build.DatasetName];
-                        var column = fr[build.PropertyName];
+                        var fr = complianceModel.Database[spreadsheetBuild.DatasetName];
+                        var column = fr[spreadsheetBuild.PropertyName];
                         var value = column.Buffer.GetValue(0);
 
-                        Console.WriteLine($"{build.SheetName}!{build.CellReference} = VALUE -> {value}");
+                        Console.WriteLine($"{spreadsheetBuild.SheetName}!{spreadsheetBuild.CellReference} = VALUE -> {value}");
                     }
                 }
             }
@@ -645,7 +702,8 @@ namespace BridgeTester1
         static void Main(string[] args)
         {
             var serviceProvider = new ServiceCollection()
-                .AddDependencies()
+                .AddTransient<Program>()
+                .AddTransient<LoadTester>()
                 .BuildServiceProvider();
 
             var program = serviceProvider.GetService<Program>();

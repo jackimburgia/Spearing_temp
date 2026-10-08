@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Spearing.Data.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DapperUtilities\DapperUtilities.csproj" />
+    <ProjectReference Include="..\IComplianceData\IComplianceData.csproj" />
+    <ProjectReference Include="..\IDataUtilities\IDataUtilities.csproj" />
+    <ProjectReference Include="..\SqlClientUtilities\SqlClientUtilities.csproj" />
+  </ItemGroup>
+
+</Project>
